@@ -45,8 +45,6 @@ namespace Task
             Y += random.Next(-1, 1);
 
             if (X < 0) X = 0;
-            if (X < 0) X = 0;
-            if (X < 0) X = 0;
             if (Y < 0) Y = 0;
         }
 

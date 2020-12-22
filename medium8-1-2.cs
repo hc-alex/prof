@@ -6,38 +6,34 @@ namespace Task
     {
         public static void Main(string[] args)
         {
-            Object[] objects = { new Object(5, 5), new Object(10, 10), new Object(15, 15) };
+            Object[] objects = 
+            { 
+                new Object(new Position(5, 5)), 
+                new Object(new Position(10, 10)), 
+                new Object(new Position(15, 15)) 
+            };
+            
+            Renderer renderer = new Renderer(objects);
 
             while (true)
             {
-                for (int i = 0; i < objects.Length; i++)
-                {
-                    if (i < objects.Length - 1)
-                    {
-                        for (int j = i; j < objects.Length - 1; j++) 
-                            ObjectKiller.TryKillObjectsWithEqualXY(objects[j], objects[j + 1]);
-                    }
-
-                    objects[i].RandomiseXY();
-                    Writer.TryWriteAliveObjectPosition(objects[i], i);
-                }
+                renderer.Update();
             }
         }
     }
 
-    public class Object
+    public class Position
     {
-        public Object(int x, int y)
+        public Position(int x, int y)
         {
             X = x;
             Y = y;
         }
-
+        
         public int X { get; private set; }
         public int Y { get; private set; }
-        public bool IsAlive { get; private set; } = true; 
 
-        public void RandomiseXY()
+        public void Randomise()
         {
             Random random = new Random();
             
@@ -47,35 +43,60 @@ namespace Task
             if (X < 0) X = 0;
             if (Y < 0) Y = 0;
         }
-
-        public void Die() => 
-            IsAlive = false;
     }
 
-    public static class ObjectKiller
+    public class Object
     {
-        public static void TryKillObjectsWithEqualXY(Object obj1, Object obj2)
+        public Object(Position position)
         {
-            if (!AreObjectsXYEqual(obj1, obj2)) 
-                return;
+            Position = position;
+        }
+        
+        public Position Position { get; }
 
-            obj1.Die();
-            obj2.Die();
+        public void RandomisePosition() => 
+            Position.Randomise();
+    }
+
+    public class Renderer
+    {
+        private readonly Object[] _objects;
+        private readonly bool[] _isObjectAlive;
+        
+        public Renderer(Object[] objects)
+        {
+            _objects = objects;
+            _isObjectAlive = new bool[objects.Length];
         }
 
-        private static bool AreObjectsXYEqual(Object obj1, Object obj2) => 
-            obj1.X == obj2.X && obj1.Y == obj2.Y;
-    }
-
-    public static class Writer
-    {
-        public static void TryWriteAliveObjectPosition(Object obj, int position)
+        public void Update()
         {
-            if(!obj.IsAlive)
-                return;
-            
-            Console.SetCursorPosition(obj.X, obj.Y);
-            Console.Write(position);
+            for (int i = 0; i < _objects.Length; i++)
+            {
+                if (i < _objects.Length - 1)
+                {
+                    for (int j = i; j < _objects.Length - 1; j++)
+                    {
+                        bool isAlive = AreObjectsPositionsEqual(_objects[j], _objects[j + 1]);
+                        _isObjectAlive[j] = isAlive;
+                        _isObjectAlive[j + 1] = isAlive;
+                    }
+                }
+
+                _objects[i].RandomisePosition();
+                
+                if (_isObjectAlive[i]) 
+                    DrawObject(_objects[i], i);
+            }
+        }
+
+        private bool AreObjectsPositionsEqual(Object obj1, Object obj2) => 
+            obj1.Position.X == obj2.Position.X && obj1.Position.Y == obj2.Position.Y;
+
+        private void DrawObject(Object obj, int i)
+        {
+            Console.SetCursorPosition(obj.Position.X, obj.Position.Y);
+            Console.Write(i);
         }
     }
 }

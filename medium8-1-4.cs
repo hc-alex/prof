@@ -6,7 +6,7 @@ public class Player
 
 public class Mover
 {
-    private Movement _movement;
+    private Direction _direction;
     
     public float Speed { get; private set; }
     
@@ -16,10 +16,10 @@ public class Mover
     }
 }
 
-public class Movement
+public class Direction
 {
-    public float DirectionX { get; private set; }
-    public float DirectionY { get; private set; }
+    public float X { get; private set; }
+    public float Y { get; private set; }
 }
 
 public class Attacker

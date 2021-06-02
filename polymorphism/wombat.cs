@@ -1,29 +1,35 @@
-class Wombat
+public abstract class Creature
 {
-  public int Health;
-  public int Armor;
+  private int _health;
+  protected abstract int DamageAmount(int value);
 
-  public void TakeDamage(int damage)
+  public void TakeDamage(int value)
   {
-    Health -= damage - armor;
-    if(Health <= 0)
-    {
+    _health -= DamageAmount(value);
+
+    if (_health <= 0)
       Console.WriteLine("Я умер");
-    }
   }
 }
 
-class Human
+public class Wombat : Creature
 {
-  public int Health;
-  public int Agility;
+  private readonly int _armor;
 
-  public void TakeDamage(int damage)
-  {
-    Health -= damage / Agility;
-    if(Health <= 0)
-    {
-      Console.WriteLine("Я умер");
-    }
-  }
+  public Wombat(int armor) =>
+    _armor = armor;
+
+  protected override int DamageAmount(int value) =>
+    value - _armor;
+}
+
+public class Human : Creature
+{
+  private readonly int _agility;
+
+  public Human(int agility) =>
+    _agility = agility;
+
+  protected override int DamageAmount(int value) => 
+    value / _agility;
 }

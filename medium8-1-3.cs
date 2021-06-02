@@ -1,9 +1,9 @@
 public class Bag
 {
-  public readonly List<Item> Items;
+  public List<IItem> Items { get; }
   private readonly int _maxWidth;
-
-  public Bag(List<Item> items, int maxWidth)
+    
+  public Bag(List<IItem> items, int maxWidth)
   {
     Items = items;
     _maxWidth = maxWidth;
@@ -12,7 +12,7 @@ public class Bag
   public void AddItem(string name, int count)
   {
     int currentWidth = Items.Sum(item => item.Count);
-    Item targetItem = Items.FirstOrDefault(item => item.Name == name);
+    var targetItem = (IIncreasableItem) Items.FirstOrDefault(item => item.Name == name);
 
     if (targetItem == null)
       throw new InvalidOperationException();
@@ -24,9 +24,21 @@ public class Bag
   }
 }
 
-public class Item
+public interface IItem
 {
-  public readonly string Name;
+  string Name { get; }
+  int Count { get; }
+}
+
+public interface IIncreasableItem : IItem
+{
+  void IncreaseCount(int value);
+}
+
+
+public class Item: IIncreasableItem
+{
+  public string Name { get; }
 
   public Item(string name) => 
     Name = name;

@@ -20,29 +20,8 @@ namespace Task
         Update(objects, isObjectAlive);
       }
     }
-
-    private static void Update(Object[] objects, bool[] isObjectAlive)
-    {
-      for (int i = 0; i < objects.Length; i++)
-      {
-        if (i < objects.Length - 1)
-        {
-            Object[] objects = 
-            { 
-                new Object(new Position(5, 5)), 
-                new Object(new Position(10, 10)), 
-                new Object(new Position(15, 15)) 
-            };
-            
-            Renderer renderer = new Renderer(objects);
-
-            while (true)
-            {
-                renderer.Update();
-            }
-        }
-    }
-
+  }
+    
   public class Position
   {
     public Position(int x, int y)
